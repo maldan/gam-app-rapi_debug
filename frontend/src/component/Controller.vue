@@ -5,7 +5,12 @@
       <img @click="isShow = !isShow" class="clickable" src="../asset/arrow_down.svg" alt="" />
     </div>
     <div v-if="isShow" :class="$style.body">
-      <Method v-for="x in controller.methodList" :method="x" :key="x.fullPath" />
+      <Method
+        v-for="x in controller.methodList"
+        :method="x"
+        :host="host"
+        :key="x.httpMethod + '' + x.fullPath"
+      />
     </div>
   </div>
 </template>
@@ -17,6 +22,10 @@ import Method from './Method.vue';
 export default defineComponent({
   props: {
     controller: Object,
+    host: {
+      type: String,
+      required: true,
+    },
   },
   components: { Method },
   async mounted() {},

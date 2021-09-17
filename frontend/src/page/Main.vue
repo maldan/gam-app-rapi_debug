@@ -7,7 +7,7 @@
 
     <div class="body">
       <div v-for="x in controllerList" :key="x.name">
-        <Controller :controller="x" />
+        <Controller :controller="x" :host="host" />
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default defineComponent({
   },
   data: () => {
     return {
-      host: '127.0.0.1:5000',
+      host: '127.0.0.1:5034',
       controllerList: [] as any[],
     };
   },
