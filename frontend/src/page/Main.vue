@@ -51,7 +51,7 @@ export default defineComponent({
   },
   data: () => {
     return {
-      host: '127.0.0.1:5034',
+      host: '127.0.0.1:5000',
       controllerList: [] as any[],
     };
   },

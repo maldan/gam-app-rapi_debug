@@ -39,6 +39,7 @@ export default defineComponent({
   },
   components: { Struct },
   async mounted() {
+    this.useMultipart = false;
     this.obj = this.prepareStruct(this.method.input, {});
     this.isReady = true;
   },
@@ -63,7 +64,10 @@ export default defineComponent({
             out[struct.fieldList[i].name] = {};
           }
           if (struct.fieldList[i].kind === 'struct') {
-            if (struct.fieldList[i].type === 'time.Time') {
+            if (struct.fieldList[i].type === 'rapi_core.File') {
+              out[struct.fieldList[i].name] = null;
+              this.useMultipart = true;
+            } else if (struct.fieldList[i].type === 'time.Time') {
               out[struct.fieldList[i].name] = Moment().format('YYYY-MM-DD HH:mm:ss');
             } else {
               out[struct.fieldList[i].name] = this.prepareStruct(struct.fieldList[i], {});
@@ -74,15 +78,71 @@ export default defineComponent({
       return out;
     },
     async execute() {
-      if (this.method.httpMethod === 'POST') {
+      if (this.method.httpMethod === 'POST' || this.method.httpMethod === 'PATCH') {
         try {
+          // @ts-ignore
+          var sas = Axios[this.method.httpMethod.toLowerCase()];
+
+          // Formdata
+          var formData = new FormData();
+          if (this.useMultipart) {
+            for (let s in this.obj) {
+              if (this.obj[s] instanceof File) {
+                formData.append(s, this.obj[s]);
+              } else {
+                formData.append(s, this.obj[s]);
+              }
+            }
+          }
+
+          // Reponse
           this.response = (
-            await Axios.post(`http://${this.host}${this.method.fullPath}`, this.obj, {
+            await sas(
+              `http://${this.host}${this.method.fullPath}`,
+              this.useMultipart ? formData : this.obj,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: localStorage.getItem(`__debugAccessToken_${this.host}`),
+                },
+              },
+            )
+          ).data;
+
+          if (this.response?.response?.accessToken) {
+            localStorage.setItem(
+              `__debugAccessToken_${this.host}`,
+              this.response.response.accessToken,
+            );
+          }
+        } catch (e) {
+          this.response = e.response.data;
+        }
+      }
+
+      if (this.method.httpMethod === 'GET' || this.method.httpMethod === 'DELETE') {
+        try {
+          let query = ``;
+          for (const key in this.obj) {
+            query += `${key}=${encodeURI(this.obj[key])}&`;
+          }
+
+          // @ts-ignore
+          var sas2 = Axios[this.method.httpMethod.toLowerCase()];
+          this.response = (
+            await sas2(`http://${this.host}${this.method.fullPath}?${query}`, {
               headers: {
-                'Content-Type': 'application/json',
+                Authorization: localStorage.getItem(`__debugAccessToken_${this.host}`),
               },
             })
           ).data;
+
+          if (this.response?.response?.accessToken) {
+            localStorage.setItem(
+              `__debugAccessToken_${this.host}`,
+              this.response.response.accessToken,
+            );
+          }
         } catch (e) {
           this.response = e.response.data;
         }
@@ -95,6 +155,7 @@ export default defineComponent({
       obj: {} as any,
       response: {} as any,
       isReady: false,
+      useMultipart: false,
       colors: {
         keyColor: '#ffb939',
         numberColor: '#00d0ff',

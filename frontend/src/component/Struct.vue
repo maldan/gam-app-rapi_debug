@@ -11,11 +11,16 @@
       />
       <input type="checkbox" v-if="struct.kind === 'bool'" v-model="obj[struct.name]" />
       <input type="datetime-local" v-if="struct.type === 'time.Time'" v-model="obj[struct.name]" />
+      <input
+        type="file"
+        v-if="struct.type === 'rapi_core.File'"
+        @change="obj[struct.name] = $event.target.files[0]"
+      />
     </div>
-    <div v-if="struct.type !== 'time.Time'">
+    <div v-if="struct.type !== 'time.Time' && struct.type !== 'rapi_core.File'">
       <div v-for="x in struct.fieldList" :key="x.name">
         <Struct
-          v-if="x.kind === 'struct' && x.type !== 'time.Time'"
+          v-if="x.kind === 'struct' && x.type !== 'time.Time' && x.type !== 'rapi_core.File'"
           :struct="x"
           :obj="obj[x.name]"
         />
