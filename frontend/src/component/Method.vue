@@ -3,14 +3,20 @@
     <div :class="$style.header">
       <div :class="[$style.type, $style[method.httpMethod]]">{{ method.httpMethod }}</div>
       <div>{{ method.fullPath }}</div>
-      <img @click="isShow = !isShow" class="clickable" src="../asset/arrow_down.svg" alt="" />
+      <ui-button
+        @click="isShow = !isShow"
+        icon="arrow_down_small"
+        style="flex: 0; padding: 2px; border-radius: 0; margin-left: auto"
+      />
     </div>
     <div v-if="isShow && isReady" :class="$style.body">
       <Struct :struct="method.input" :obj="obj" style="padding: 0" />
       <div>
         <pre v-html="formatHighlight(JSON.stringify(obj, null, 4), colors)"></pre>
       </div>
-      <button @click="execute()">Execute</button>
+
+      <ui-button @click="execute" icon="arrow_right_small" style="flex: 0; padding: 2px" />
+
       <div>
         <pre v-html="formatHighlight(JSON.stringify(response, null, 4), colors)"></pre>
       </div>
@@ -81,10 +87,10 @@ export default defineComponent({
       if (this.method.httpMethod === 'POST' || this.method.httpMethod === 'PATCH') {
         try {
           // @ts-ignore
-          var sas = Axios[this.method.httpMethod.toLowerCase()];
+          let sas = Axios[this.method.httpMethod.toLowerCase()];
 
           // Formdata
-          var formData = new FormData();
+          let formData = new FormData();
           if (this.useMultipart) {
             for (let s in this.obj) {
               if (this.obj[s] instanceof File) {
@@ -95,7 +101,7 @@ export default defineComponent({
             }
           }
 
-          // Reponse
+          // Response
           this.response = (
             await sas(
               `http://${this.host}${this.method.fullPath}`,
@@ -196,9 +202,8 @@ export default defineComponent({
 
     .type {
       background: #666666;
-      padding: 5px 12px;
+      padding: 4px 8px;
       border-radius: 4px;
-      font-weight: bold;
       margin-right: 10px;
       user-select: none;
       font-size: 14px;
@@ -224,13 +229,17 @@ export default defineComponent({
   .body {
     background: #2f2f2f;
     padding: 10px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 30px 1fr;
+    gap: 10px;
+    align-items: start;
 
     pre {
       background: #252525;
       padding: 10px;
       border-radius: 4px;
       color: #cecece;
+      margin: 0;
     }
   }
 }

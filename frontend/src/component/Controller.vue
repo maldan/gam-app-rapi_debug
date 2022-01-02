@@ -2,7 +2,11 @@
   <div :class="$style.controller">
     <div :class="$style.header">
       <div>{{ controller.name }}</div>
-      <img @click="isShow = !isShow" class="clickable" src="../asset/arrow_down.svg" alt="" />
+      <ui-button
+        @click="isShow = !isShow"
+        icon="arrow_down_small"
+        style="flex: 0; padding: 2px; border-radius: 0; margin-left: auto"
+      />
     </div>
     <div v-if="isShow" :class="$style.body">
       <Method
@@ -50,13 +54,14 @@ export default defineComponent({
 
     > div {
       background: #156d04;
-      padding: 7px 19px;
+      padding: 5px 15px;
       border-radius: 16px;
       font-weight: bold;
       margin-right: 10px;
       user-select: none;
       color: #87ff8b;
       text-transform: uppercase;
+      font-size: 14px;
     }
 
     img {

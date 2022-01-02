@@ -1,8 +1,8 @@
 <template>
   <div class="main">
     <div style="display: flex">
-      <Input v-model="host" placeholder="Host" />
-      <Button @click="getMethodList()" text="Connect" />
+      <ui-input v-model="host" placeholder="Host" />
+      <ui-button @click="getMethodList()" text="Connect" />
     </div>
 
     <div class="body">
@@ -15,14 +15,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Input from '../component/Input.vue';
-import Button from '../component/Button.vue';
 import Controller from '../component/Controller.vue';
 import Axios from 'axios';
 
 export default defineComponent({
-  components: { Input, Button, Controller },
-  async mounted() {},
+  components: { Controller },
+  async mounted() {
+    this.host = localStorage.getItem('rapidebug_host') || '127.0.0.1:16000';
+  },
   methods: {
     async getMethodList() {
       const methodList = (await Axios.get(`http://${this.host}/debug/api/methodList`)).data
@@ -47,11 +47,13 @@ export default defineComponent({
       for (let s in controller) {
         this.controllerList.push(controller[s]);
       }
+
+      localStorage.setItem('rapidebug_host', this.host);
     },
   },
   data: () => {
     return {
-      host: '127.0.0.1:5000',
+      host: '127.0.0.1:16000',
       controllerList: [] as any[],
     };
   },
