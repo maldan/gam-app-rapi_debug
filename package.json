@@ -1,6 +1,6 @@
 {
   "name": "@maldan/gam-app-rapi_debug",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Rapi Debugger",
   "main": "index.js",
   "scripts": {},
