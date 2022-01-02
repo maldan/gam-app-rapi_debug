@@ -36,7 +36,7 @@ export default defineComponent({
         if (!controller[methodList[i].controller]) {
           controller[methodList[i].controller] = {
             name: methodList[i].controller,
-            methodList: [],
+            methodList: [] //s
           };
         }
 
