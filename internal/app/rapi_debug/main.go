@@ -4,10 +4,13 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	"github.com/maldan/go-rapi"
+	"github.com/maldan/go-rapi/rapi_core"
+	"github.com/maldan/go-rapi/rapi_rest"
+	"github.com/maldan/go-rapi/rapi_vfs"
 
 	"github.com/maldan/gam-app-rapi_debug/internal/app/rapi_debug/api"
 	"github.com/maldan/gam-app-rapi_debug/internal/app/rapi_debug/core"
-	"github.com/maldan/go-restserver"
 )
 
 func Start(frontFs embed.FS) {
@@ -25,10 +28,19 @@ func Start(frontFs embed.FS) {
 	core.DataDir = *dataDir
 
 	// Init server
-	restserver.Start(fmt.Sprintf("%s:%d", *host, *port), map[string]interface{}{
-		"/": restserver.VirtualFs{Root: "frontend/build/", Fs: frontFs},
-		"/api": map[string]interface{}{
-			"main": api.MainApi{},
+	rapi.Start(rapi.Config{
+		Host: fmt.Sprintf("%s:%d", *host, *port),
+		Router: map[string]rapi_core.Handler{
+			"/": rapi_vfs.VFSHandler{
+				Root: "frontend/build",
+				Fs:   frontFs,
+			},
+			"/api": rapi_rest.ApiHandler{
+				Controller: map[string]interface{}{
+					"main": api.MainApi{},
+				},
+			},
 		},
+		DbPath: core.DataDir,
 	})
 }

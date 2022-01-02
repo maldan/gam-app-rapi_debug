@@ -18,14 +18,12 @@ module.exports = {
     'no-debugger': 'off',
     'no-empty': 'off',
     '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
-
     'vue/no-use-v-if-with-v-for': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
     'vue/no-unused-components': 'off',
-
     '@typescript-eslint/ban-ts-comment': 'off',
     'vue/no-mutating-props': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
   },
   overrides: [
     {
