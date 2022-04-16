@@ -16,7 +16,7 @@ import (
 func Start(frontFs embed.FS) {
 	// Server
 	var host = flag.String("host", "127.0.0.1", "Server Hostname")
-	var port = flag.Int("port", 16000, "Server Port")
+	var port = flag.Int("port", 16001, "Server Port")
 	_ = flag.Int("clientPort", 8080, "Client Port")
 
 	// Data

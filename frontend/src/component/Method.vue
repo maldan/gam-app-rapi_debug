@@ -10,7 +10,8 @@
       />
     </div>
     <div v-if="isShow && isReady" :class="$style.body">
-      <Struct :struct="method.input" :obj="obj" style="padding: 0" />
+      <Struct v-if="method.input" :struct="method.input" :obj="obj" style="padding: 0" />
+      <div v-if="!method.input"></div>
       <div>
         <pre v-html="formatHighlight(JSON.stringify(obj, null, 4), colors)"></pre>
       </div>
@@ -52,6 +53,7 @@ export default defineComponent({
   methods: {
     formatHighlight,
     prepareStruct(struct: any, out: any) {
+      if (!struct) return {};
       if (struct.kind === 'struct') {
         for (let i = 0; i < struct.fieldList.length; i++) {
           if (struct.fieldList[i].kind === 'string') {
